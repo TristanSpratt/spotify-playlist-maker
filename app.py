@@ -123,7 +123,12 @@ if st.button("Make My Playlist"):
     with st.spinner("🎵 Cooking up some sounds..."):
         try:
             query = get_search_query_from_prompt(prompt)
+            st.caption(f"🎯 Search query: `{query}`")  # for debugging
+
             track_uris = get_search_results(sp, query)
+            if not track_uris:
+                st.error("😕 Sorry, couldn't find any songs for that vibe. Try rewording your prompt!")
+                st.stop()
             title = generate_title(prompt)
             playlist_url = create_playlist(sp, title, track_uris)
 
