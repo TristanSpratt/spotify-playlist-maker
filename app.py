@@ -65,13 +65,17 @@ def generate_title(prompt):
     title_response = client.chat.completions.create(
         model="gpt-4o",
         messages=[
-            {"role": "system", "content": "Generate a short title for this playlist prompt."},
+            {"role": "system", "content": "Generate a very short title for this playlist prompt."},
             {"role": "user", "content": prompt}
         ]
     )
     return title_response.choices[0].message.content.strip()
 
 #### Frontend ####
+
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 st.set_page_config(page_title="Vibe Maker", layout="centered")
 st.markdown("<style>body { font-family: 'Helvetica Neue', sans-serif; }</style>", unsafe_allow_html=True)
@@ -117,13 +121,13 @@ st.success("You're logged in!")
 st.markdown("---")
 st.markdown("*Describe the vibe you're going for, and I'll generate a playlist on your Spotify*")
 
-prompt = st.text_input("Your playlist idea:", placeholder="e.g., I need some chill music for a late-night study session")
+prompt = st.text_input("Your playlist idea:", placeholder="e.g., I need some chill music to study to")
 
 if st.button("Make My Playlist"):
     with st.spinner("🎵 Cooking up some sounds..."):
         try:
             query = get_search_query_from_prompt(prompt)
-            st.caption(f"🎯 Search query: `{query}`")  # for debugging
+            logger.info(f"Query string sent to Spotify: {query}")  # for debugging
 
             track_uris = get_search_results(sp, query)
             if not track_uris:
